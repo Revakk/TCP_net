@@ -1,6 +1,9 @@
 #pragma once
 
 #include "tcp_common.hpp"
+#include "message.hpp"
+#include "message_queue.hpp"
+#include "tcp_session.hpp"
 
 namespace net
 {
@@ -70,7 +73,7 @@ namespace net
 		}
 
 		
-		messages_queue<owned_message<T>>& incoming_messages()
+		message_queue<owned_message<T>>& incoming_messages()
 		{
 			return q_messages_in_;
 		}
