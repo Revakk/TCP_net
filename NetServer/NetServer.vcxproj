@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{dc1f6c66-fc6d-4a42-94d9-dd3c3f94785d}</ProjectGuid>
-    <RootNamespace>tcpserver</RootNamespace>
+    <ProjectGuid>{7e1076d6-1a60-4489-a77e-258dc2af78cb}</ProjectGuid>
+    <RootNamespace>NetServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)\tcp_server;$(SolutionDir)\tcp_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -120,6 +121,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)\tcp_server;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,16 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ExampleClient.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="message.hpp" />
-    <ClInclude Include="message_queue.hpp" />
-    <ClInclude Include="tcp_client.hpp" />
-    <ClInclude Include="tcp_common.hpp" />
-    <ClInclude Include="tcp_network.hpp" />
-    <ClInclude Include="tcp_server.hpp" />
-    <ClInclude Include="tcp_session.hpp" />
+    <ClCompile Include="SimpleServer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

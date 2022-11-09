@@ -78,12 +78,12 @@ namespace net
 	};
 
 	template<typename T>
-	class connection;
+	class session;
 
 	template<typename T>
 	struct owned_message
 	{
-		std::shared_ptr<connection<T>> remote = nullptr;
+		std::shared_ptr<session<T>> remote = nullptr;
 		message<T> msg;
 
 		friend std::ofstream& operator << (std::ofstream& _os, owned_message<T>& _mes)
