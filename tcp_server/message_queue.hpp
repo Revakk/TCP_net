@@ -16,49 +16,49 @@ namespace net
 
 		const T& front()
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			return deQ_.front();
 		}
 
 		const T& back()
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			return deQ_.back();
 		}
 
 		void push_back(const T& _data)
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			deQ_.emplace_back(std::move(_data));
 		}
 
 		void push_front(const T& _data)
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			deQ_.emplace_front(std::move(_data));
 		}
 
 		bool empty() const
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			return deQ_.empty();
 		}
 
 		bool size() const
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			return deQ_.size();
 		}
 
 		void clear()
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			deQ_.clear();
 		}
 
 		T pop_front()
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			auto t = std::move(deQ_.front());
 			deQ_.pop_front();
 			return t;
@@ -66,7 +66,7 @@ namespace net
 
 		T pop_back()
 		{
-			std::lock_guard(m_);
+			std::scoped_lock(m_);
 			auto t = std::move(deQ_.back());
 			deQ_.pop_back();
 			return t;

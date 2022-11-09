@@ -1,6 +1,6 @@
 #include <iostream>
 #include "tcp_network.hpp"
-
+#include <string_view>
 
 enum class message_type : uint32_t
 {
@@ -18,17 +18,14 @@ int main()
 	float c = 3.14159f;
 
 	//std::string d = "ahoj vole";
-	struct
-	{
-		float x;
-		float y;
-	} d[5];
+	std::string_view d = "ahoj vole";
 
 	msg << a << b << c << d;
 
 	a = 99;
 	b = false;
 	c = 99.0f;
+	d = "ahoj mrdko";
 
 	msg >> d >> c >> b >> a;
 
