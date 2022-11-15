@@ -29,13 +29,18 @@ namespace net
 		{
 			try
 			{
-				session_ = std::make_unique<session<T>>();
 
 				boost::asio::ip::tcp::resolver resolver(context_);
+				//boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(_port));
 
 				auto endpoints = resolver.resolve(_host, std::to_string(_port));
 
+				session_ = std::make_unique<session<T>>(
+					session<T>::owner::CLIENT,
+					context_,boost::asio::ip::tcp::socket(context_),q_messages_in_);
+
 				session_->connect_to_server(endpoints);
+				thr_context_ = std::thread([this]() {context_.run(); });
 
 			}
 			catch (std::exception& e)
@@ -61,7 +66,15 @@ namespace net
 				thr_context_.join();
 			}
 
-			session_->release();
+			session_.release();
+		}
+
+		void send(const message<T>& _msg)
+		{
+			if (is_connected())
+			{
+				session_.send_message(_msg);
+			}
 		}
 
 		bool is_connected()

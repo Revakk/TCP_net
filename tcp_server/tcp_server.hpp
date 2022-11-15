@@ -61,20 +61,20 @@ namespace net
 				{
 					std::cout << "[SERVER] New Connection: " << _socket.remote_endpoint() << '\n';
 
-					/*std::shared_ptr<session<T>> new_connection = std::make_shared<session<T>>(session<T>::owner::server,asio_context_,std::move(socket),messages_in_);*/
+					std::shared_ptr<session<T>> new_connection = std::make_shared<session<T>>(session<T>::owner::SERVER,asio_context_,std::move(_socket),messages_in_);
 
-					/*if (on_client_connect(new_connection))
+					if (on_client_connect(new_connection))
 					{
 						deq_connections_.push_back(std::move(new_connection));
 
 						deq_connections_.back()->connect_to_client(ID_counter_++);
 
-						std::cout << "[" << deq_connections_->back()->get_id() << "] connection approved" << '\n';
+						std::cout << "[" << deq_connections_.back()->get_id() << "] connection approved" << '\n';
 					}
 					else
 					{
 						std::cout << "[----] Connection denied!" << '\n';
-					}*/
+					}
 				}
 				else
 				{
