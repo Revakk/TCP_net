@@ -49,7 +49,7 @@ namespace net
 			std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
 
 
-			_msg.header_.message_size_ = _msg.size();
+			_msg.header_.message_size_ = _msg.data_.size();
 
 			return _msg;
 

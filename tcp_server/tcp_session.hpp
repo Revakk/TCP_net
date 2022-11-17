@@ -120,10 +120,14 @@ namespace net
 				{
 					if (!_ec)
 					{
+						std::cout << "read header" << '\n';
 						if (temporary_msg_.header_.message_size_ > 0)
 						{
+							std::cout << "before resize to: " << temporary_msg_.header_.message_size_ << '\n';
 							temporary_msg_.data_.resize(temporary_msg_.header_.message_size_);
+							std::cout << "after resize" << '\n';
 							read_body();
+							std::cout << "after read_body" << '\n';
 						}
 					}
 					else
@@ -136,16 +140,17 @@ namespace net
 
 		void read_body()
 		{
-			boost::asio::async_read(socket_, boost::asio::buffer(&temporary_msg_.header_, temporary_msg_.header_.message_size_),
+			boost::asio::async_read(socket_, boost::asio::buffer(temporary_msg_.data_.data(), temporary_msg_.header_.message_size_),
 				[this](std::error_code _ec, std::size_t _length)
 				{
 					if (!_ec)
 					{
+						std::cout << "read body" << '\n';
 						add_to_incoming_message_queue();
 					}
 					else
 					{
-						std::cout << "[" << id_ << "]" << "Header read failed." << '\n';
+						std::cout << "[" << id_ << "]" << "Body read failed." << '\n';
 						socket_.close();
 					}
 				});
@@ -160,13 +165,17 @@ namespace net
 					{
 						if (q_messages_out_.front().data_.size() > 0)
 						{
+							std::cout << "[write_header] first if" << '\n';
 							write_body();
+							std::cout << "[write_header] first if, after write body" << '\n';
 						}
 						else
 						{
+							std::cout << "[write_header] else" << '\n';
 							q_messages_out_.pop_front();
 							if (!q_messages_out_.empty())
 							{
+								std::cout << "[write_header] second if" << '\n';
 								write_header();
 							}
 						}
