@@ -73,7 +73,7 @@ namespace net
 		{
 			if (is_connected())
 			{
-				session_.send_message(_msg);
+				session_->send_message(_msg);
 			}
 		}
 

@@ -127,8 +127,9 @@ namespace net
 			}
 		}
 
-		void update(size_t _max_messages = -1)
+		void update(size_t _max_messages = 1000)
 		{
+
 			size_t message_count = 0;
 			while (message_count < _max_messages && !messages_in_.empty())
 			{
