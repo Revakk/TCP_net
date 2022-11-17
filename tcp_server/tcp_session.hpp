@@ -153,12 +153,12 @@ namespace net
 
 		void write_header()
 		{
-			boost::asio::async_write(socket_, boost::asio::buffer(q_messages_out_.front().header_, sizeof(message_header<T>)),
+			boost::asio::async_write(socket_, boost::asio::buffer(&q_messages_out_.front().header_, sizeof(message_header<T>)),
 				[this](std::error_code _ec, std::size_t _length)
 				{
 					if (!_ec)
 					{
-						if (q_messages_out_.front().data.size() > 0)
+						if (q_messages_out_.front().data_.size() > 0)
 						{
 							write_body();
 						}
@@ -181,7 +181,7 @@ namespace net
 
 		void write_body()
 		{
-			boost::asio::async_write(socket_, boost::asio::buffer(q_messages_out_.front().data_.data(), q_messages_out_.front().data.size()),
+			boost::asio::async_write(socket_, boost::asio::buffer(q_messages_out_.front().data_.data(), q_messages_out_.front().data_.size()),
 				[this](std::error_code _ec, std::size_t _length)
 				{
 					if (!_ec)

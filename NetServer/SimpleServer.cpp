@@ -30,7 +30,15 @@ protected:
 
 	virtual void on_message(std::shared_ptr<net::session<CustomMsgType>> _client,net::message<CustomMsgType>& _msg)
 	{
-
+		switch (_msg.header_.id_)
+		{
+		case CustomMsgType::ServerPing:
+		{
+			std::cout << "[" << _client->get_id() << "]: Server Ping\n";
+			_client->send_message(_msg);
+		}
+		break;
+		}
 	}
 
 };
