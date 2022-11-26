@@ -110,7 +110,7 @@ namespace net
 				{
 					if (client != _client_to_ignore)
 					{
-						client->send(_msg);
+						client->send_message(_msg);
 					}
 					
 				}

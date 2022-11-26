@@ -20,6 +20,12 @@ public:
 protected:
 	virtual bool on_client_connect(std::shared_ptr<net::session<CustomMsgType>> _client)
 	{
+		std::cout << "on client connect" << '\n';
+		net::message<CustomMsgType> msg;
+		msg.header_.id_ = CustomMsgType::ServerAccept;
+
+		//_client->send_message(msg);
+
 		return true;
 	}
 
@@ -30,6 +36,7 @@ protected:
 
 	virtual void on_message(std::shared_ptr<net::session<CustomMsgType>> _client,net::message<CustomMsgType>& _msg)
 	{
+		std::cout << "on message" << '\n';
 		switch (_msg.header_.id_)
 		{
 		case CustomMsgType::ServerPing:
@@ -38,11 +45,18 @@ protected:
 			_client->send_message(_msg);
 		}
 		break;
+
+		case CustomMsgType::MessageAll:
+		{
+			net::message<CustomMsgType> msg;
+			msg.header_.id_ = CustomMsgType::MessageAll;
+			broadcast_message(msg);
+		}
+
 		}
 	}
 
 };
-
 
 
 int main()

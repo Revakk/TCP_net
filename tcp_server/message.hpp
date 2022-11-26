@@ -18,7 +18,7 @@ namespace net
 	{
 	
 		message_header<T> header_{};
-		std::vector<uint8_t> data_;
+		std::vector<uint8_t> data_{};
 
 		size_t size() const
 		{
@@ -74,7 +74,6 @@ namespace net
 
 		}
 		
-
 	};
 
 	template<typename T>
