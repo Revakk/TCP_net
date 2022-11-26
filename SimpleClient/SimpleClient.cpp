@@ -25,9 +25,13 @@ public:
 		send(msg);
 	}
 
-
+	void message_all()
+	{
+		net::message<CustomMsgType> msg;
+		msg.header_.id_ = CustomMsgType::MessageAll;
+		send(msg);
+	}
 };
-
 
 
 int main()
@@ -51,6 +55,7 @@ int main()
 		}
 
 		if (key[0] && !old_key[0]) c.ping_server();
+		if (key[1] && !old_key[1]) c.message_all();
 		if (key[2] && !old_key[2]) b_quit = true;
 
 
@@ -62,9 +67,16 @@ int main()
 			if (!c.incoming_messages().empty())
 			{
 				auto msg = c.incoming_messages().pop_front().msg;
-
+				std::cout << "received msg" << '\n';
 				switch (msg.header_.id_)
 				{
+
+				case CustomMsgType::ServerAccept:
+				{
+					std::cout << "server accepted message" << '\n';
+				}
+				break;
+
 				case CustomMsgType::ServerPing:
 				{
 					std::chrono::system_clock::time_point time_now = std::chrono::system_clock::now();
@@ -74,7 +86,16 @@ int main()
 					std::cout << "Ping: " << std::chrono::duration<double>(time_now - time_then).count() << '\n';
 				}
 				break;
-					
+
+				case CustomMsgType::ServerMessage:
+				{
+					uint32_t client_ID;
+					msg >> client_ID;
+					std::cout << "hello from [" << client_ID << "]\n";
+				}
+				break;
+
+
 				}
 			}
 		}

@@ -121,7 +121,7 @@ namespace net
 					if (!_ec)
 					{
 						std::cout << "read header" << '\n';
-						if (temporary_msg_.header_.message_size_ > 0)
+						if (temporary_msg_.header_.message_size_ >= 0)
 						{
 							std::cout << "before resize to: " << temporary_msg_.header_.message_size_ << '\n';
 							temporary_msg_.data_.resize(temporary_msg_.header_.message_size_);
@@ -163,7 +163,7 @@ namespace net
 				{
 					if (!_ec)
 					{
-						if (q_messages_out_.front().data_.size() > 0)
+						if (q_messages_out_.front().data_.size() >= 0)
 						{
 							std::cout << "[write_header] first if" << '\n';
 							write_body();
