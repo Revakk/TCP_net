@@ -1,11 +1,14 @@
 #pragma once
-
+#define VALIDATION
 #include "tcp_common.hpp"
 #include "message_queue.hpp"
 #include "message.hpp"
 
 namespace net
 {
+	template<typename T>
+	class tcp_server;
+
 	template<typename T>
 	class session : public std::enable_shared_from_this<session<T>>
 	{
@@ -19,6 +22,18 @@ namespace net
 		session(owner _parent, boost::asio::io_context& _context,boost::asio::ip::tcp::socket _socket,message_queue<owned_message<T>>& _q_in) : asio_context_(_context), socket_(std::move(_socket)),q_messages_in_(_q_in)
 		{
 			owner_type_ = _parent;
+#ifdef VALIDATION
+			if (owner_type_ == owner::SERVER)
+			{
+				handshake_out_ = static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count());
+				handshake_check_ = scramble(handshake_out_);
+			}
+			else
+			{
+				handshake_out_ = 0;
+				handshake_in_ = 0;
+			}
+#endif
 		}
 		session() = delete;
 
@@ -42,7 +57,11 @@ namespace net
 					{
 						if (!_ec)
 						{
+#ifndef VALIDATION
 							read_header();
+#else
+							read_validation();
+#endif
 						}
 						else
 						{
@@ -69,14 +88,20 @@ namespace net
 			return socket_.is_open();
 		}
 
-		void connect_to_client(uint32_t _id)
+		void connect_to_client(net::tcp_server<T>* _server,uint32_t _id)
 		{
 			if (owner_type_ == owner::SERVER)
 			{
 				if (socket_.is_open())
 				{
 					id_ = _id;
+#ifndef VALIDATION
 					read_header();
+#else
+					write_validation();
+					read_validation(_server);
+
+#endif
 				}
 			}
 		}
@@ -111,6 +136,11 @@ namespace net
 		message<T> temporary_msg_;
 
 		uint32_t id_ = 0;
+
+		//handshake validation
+		uint64_t handshake_out_ = 0;
+		uint64_t handshake_in_ = 0;
+		uint64_t handshake_check_ = 0;
 
 	private:
 		void read_header()
@@ -221,6 +251,68 @@ namespace net
 			}
 
 			read_header();
+		}
+
+		uint64_t scramble(uint64_t _input)
+		{
+			uint64_t out = _input ^ 0xFACEBAEE0ACEFABC;
+			out = (out & 0xF0F0F0F0F0F0F0) >> 4 | (out & 0xF0F0F0F0F0F0F0) << 4;
+			return out ^ 0xC0FEABCBCEFF1243;//
+		}
+
+		void write_validation()
+		{
+			boost::asio::async_write(socket_, boost::asio::buffer(&handshake_out_, sizeof(uint64_t)),
+				[this](std::error_code _ec, std::size_t _length)
+				{
+					if (!_ec)
+					{
+						if (owner_type_ == owner::CLIENT)
+							read_header();
+					}
+					else
+					{
+						socket_.close();
+					}
+				});
+
+		}
+
+		void read_validation(net::tcp_server<T>* server = nullptr)
+		{
+			boost::asio::async_read(socket_, boost::asio::buffer(&handshake_in_, sizeof(uint64_t)),
+				[this,server](std::error_code _ec, std::size_t _length)
+				{
+					if (!_ec)
+					{
+						if (owner_type_ == owner::SERVER)
+						{
+							if (handshake_in_ == handshake_check_)
+							{
+								std::cout << "client validated" << '\n';
+								server->on_client_validated(this->shared_from_this());
+
+								read_header();
+							}
+							else
+							{
+								std::cout << "Client disconnected (Failed validation)" << '\n';
+								socket_.close();
+							}
+						}
+						else
+						{
+							handshake_out_ = scramble(handshake_in_);
+
+							write_validation();
+						}
+					}
+					else
+					{
+						std::cout << "[" << id_ << "]" << "Body read failed." << '\n';
+						socket_.close();
+					}
+				});
 		}
 
 	};
