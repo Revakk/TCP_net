@@ -30,12 +30,18 @@ namespace net
 		{
 			std::scoped_lock lock(m_);
 			deQ_.emplace_back(std::move(_data));
+
+			std::unique_lock<std::mutex> ul(m_blocking_);
+			cv_blocking_.notify_one();
 		}
 
 		void push_front(const T& _data)
 		{
 			std::scoped_lock lock(m_);
 			deQ_.emplace_front(std::move(_data));
+
+			std::unique_lock<std::mutex> ul(m_blocking_);
+			cv_blocking_.notify_one();
 		}
 
 		bool empty()
@@ -72,9 +78,21 @@ namespace net
 			return t;
 		}
 
+		void wait()
+		{
+			while (empty())
+			{
+				std::unique_lock<std::mutex> ul(m_blocking_);
+				cv_blocking_.wait(ul);
+			}
+		}
+
 
 	private:
 		std::deque<T> deQ_;
 		std::mutex m_;
+
+		std::condition_variable cv_blocking_;
+		std::mutex m_blocking_;
 	};
 }

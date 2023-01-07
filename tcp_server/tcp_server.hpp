@@ -67,7 +67,7 @@ namespace net
 					{
 						deq_connections_.push_back(std::move(new_connection));
 
-						deq_connections_.back()->connect_to_client(ID_counter_++);
+						deq_connections_.back()->connect_to_client(this,ID_counter_++);
 
 						std::cout << "[" << deq_connections_.back()->get_id() << "] connection approved" << '\n';
 					}
@@ -127,8 +127,9 @@ namespace net
 			}
 		}
 
-		void update(size_t _max_messages = 1000)
+		void update(size_t _max_messages = -1, bool _wait = false)
 		{
+			if (_wait) messages_in_.wait();
 
 			size_t message_count = 0;
 			while (message_count < _max_messages && !messages_in_.empty())
@@ -154,6 +155,12 @@ namespace net
 		}
 
 		virtual void on_message(std::shared_ptr<session<T>> _client, message<T>& _msg)
+		{
+
+		}
+
+	public:
+		virtual void on_client_validated(std::shared_ptr<session<T>> _client)
 		{
 
 		}
