@@ -24,7 +24,7 @@ protected:
 		net::message<CustomMsgType> msg;
 		msg.header_.id_ = CustomMsgType::ServerAccept;
 
-		//_client->send_message(msg);
+		_client->send_message(msg);
 
 		return true;
 	}
@@ -32,6 +32,19 @@ protected:
 	virtual void on_client_disconnect(std::shared_ptr<net::session<CustomMsgType>> _client)
 	{
 
+	}
+
+	virtual void on_client_validated(std::shared_ptr<net::session<CustomMsgType>> _client)
+	{
+		std::cout << "client has successfully validated" << '\n';
+
+		net::message<CustomMsgType> msg;
+
+		msg.header_.id_= CustomMsgType::ServerAccept;
+		msg << "ahoj vole";
+
+		_client->send_message(msg);
+		//std::cout << msg.header_.message_size_ << '\n';
 	}
 
 	virtual void on_message(std::shared_ptr<net::session<CustomMsgType>> _client,net::message<CustomMsgType>& _msg)
