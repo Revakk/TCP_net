@@ -74,6 +74,11 @@ int main()
 				case CustomMsgType::ServerAccept:
 				{
 					std::cout << "server accepted message" << '\n';
+					std::cout << msg.header_.message_size_ << '\n';
+					for (auto a : msg.data_)
+					{
+						std::cout << (a);
+					}
 				}
 				break;
 

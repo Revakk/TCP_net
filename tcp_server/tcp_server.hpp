@@ -160,6 +160,7 @@ namespace net
 		}
 
 	public:
+
 		virtual void on_client_validated(std::shared_ptr<session<T>> _client)
 		{
 
