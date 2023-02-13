@@ -44,15 +44,13 @@ protected:
 		std::ifstream ifs("gg2.txt");
 		std::string content((std::istreambuf_iterator<char>(ifs)),
 			(std::istreambuf_iterator<char>()));
-		std::string ss{ "ahoj ty kreteneasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf" };
+		std::string ss{ "pièakurva +ìšèøıáíé" };
+		std::cout << ss << '\n';
 
-		auto ss1 = ss.data();
-		auto ss2 = "ahoj ty kreteneasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf";
-
-		std::array<int,18> ii{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 };
-
-
-		msg << 345345345;
+		for (auto& c : ss)
+		{
+			msg << c;
+		}
 
 		_client->send_message(msg);
 		//std::cout << msg.header_.message_size_ << '\n';

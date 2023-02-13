@@ -60,12 +60,16 @@ namespace net
 #ifndef VALIDATION
 							read_header();
 #else
+							std::cout << "read validation" << '\n';
 							read_validation();
 #endif
 						}
 						else
 						{
-
+							std::cout << "closing socket...";
+							//socket_.close();
+							disconnect();
+							std::cout << "socket closed...";
 						}
 					});
 			}
@@ -80,6 +84,9 @@ namespace net
 					socket_.close();
 
 				});
+
+			asio_context_.stop();
+
 		}
 
 
@@ -103,12 +110,16 @@ namespace net
 
 #endif
 				}
+				else
+				{
+					socket_.close();
+				}
 			}
 		}
 
 
 	public:
-		bool send_message(const message<T>& _msg)
+		void send_message(const message<T>& _msg)
 		{
 			boost::asio::post(asio_context_,
 				[this, _msg]()
@@ -268,6 +279,7 @@ namespace net
 					if (!_ec)
 					{
 						if (owner_type_ == owner::CLIENT)
+							std::cout << "read header" << '\n';
 							read_header();
 					}
 					else
@@ -303,7 +315,7 @@ namespace net
 						else
 						{
 							handshake_out_ = scramble(handshake_in_);
-
+							std::cout << "write_validation" << '\n';
 							write_validation();
 						}
 					}

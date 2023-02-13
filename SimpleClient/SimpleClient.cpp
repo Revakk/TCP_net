@@ -37,7 +37,12 @@ public:
 int main()
 {
 	CustomClient c;
-	c.connect("127.0.0.1", 60000);
+	auto successful = c.connect("127.0.0.1", 60000);
+
+	if (successful)
+	{
+		std::cout << "jsem tam :)";
+	}
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false,false,false };
@@ -106,7 +111,9 @@ int main()
 		}
 		else
 		{
-			b_quit = true;
+			c.disconnect();
+			std::this_thread::sleep_for(std::chrono::duration<int>(1));
+			c.connect("127.0.0.1", 60000);
 		}
 	}
 
