@@ -29,18 +29,28 @@ namespace net
 		{
 			try
 			{
-
+				std::cout << "try" << '\n';
 				boost::asio::ip::tcp::resolver resolver(context_);
 				//boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(_port));
 
 				auto endpoints = resolver.resolve(_host, std::to_string(_port));
+
+				if (endpoints.empty())
+				{
+					std::cout << "empty :(" << '\n';
+				}
 
 				session_ = std::make_unique<session<T>>(
 					session<T>::owner::CLIENT,
 					context_,boost::asio::ip::tcp::socket(context_),q_messages_in_);
 
 				session_->connect_to_server(endpoints);
-				thr_context_ = std::thread([this]() {context_.run(); });
+				thr_context_ = std::thread([this]() {context_.restart(); context_.run(); });
+				if (session_->is_connected())
+				{
+					std::cout << "juhuuuu" << '\n';
+				}
+				std::cout << "try" << '\n';
 
 			}
 			catch (std::exception& e)
@@ -49,11 +59,12 @@ namespace net
 				return false;
 			}
 
-			return false;
+			return true;
 		}
 
 		void disconnect()
 		{
+			std::cout << "disconnecting..." << '\n';
 			if (is_connected())
 			{
 				session_->disconnect();
@@ -67,6 +78,7 @@ namespace net
 			}
 
 			session_.release();
+			std::cout << "disconnected" << '\n';
 		}
 
 		void send(const message<T>& _msg)

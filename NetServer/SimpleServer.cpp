@@ -1,5 +1,5 @@
 #include "tcp_network.hpp"
-
+#include<fstream>
 enum class CustomMsgType : uint32_t
 {
 	ServerAccept,
@@ -41,7 +41,16 @@ protected:
 		net::message<CustomMsgType> msg;
 
 		msg.header_.id_= CustomMsgType::ServerAccept;
-		msg << "ahoj vole";
+		std::ifstream ifs("gg2.txt");
+		std::string content((std::istreambuf_iterator<char>(ifs)),
+			(std::istreambuf_iterator<char>()));
+		std::string ss{ "pièakurva +ìšèøıáíé" };
+		std::cout << ss << '\n';
+
+		for (auto& c : ss)
+		{
+			msg << c;
+		}
 
 		_client->send_message(msg);
 		//std::cout << msg.header_.message_size_ << '\n';

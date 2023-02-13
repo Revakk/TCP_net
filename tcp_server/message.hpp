@@ -46,7 +46,28 @@ namespace net
 
 			_msg.data_.resize(data_size + sizeof(DataType));
 
+			/*if (std::is_constructible_v<std::string, DataType>)
+			{
+				
+			}
+			else
+			{
+				std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
+			}*/
+
+			/*if constexpr(std::is_array_v<DataType>)
+			{
+				std::memcpy(_msg.data_.data() + data_size, &_data, _data.size());
+				std::cout << "is array"<<'\n';
+			}
+			else
+			{
+				std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
+				std::cout << "is not an array" << '\n';
+			}*/
+
 			std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
+			
 
 
 			_msg.header_.message_size_ = _msg.data_.size();
