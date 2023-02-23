@@ -47,7 +47,6 @@ int main()
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false,false,false };
 
-
 	bool b_quit = false;
 
 	while (!b_quit)
@@ -115,8 +114,8 @@ int main()
 			std::this_thread::sleep_for(std::chrono::duration<int>(1));
 			c.connect("127.0.0.1", 60000);
 		}
+		std::this_thread::sleep_for(std::chrono::duration<int>(1));
 	}
-
 
 	return 0;
 }
