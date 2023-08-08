@@ -109,7 +109,11 @@ namespace net
 
 		std::thread thr_context_;
 
+#ifndef SECURE
 		boost::asio::ip::tcp::socket socket_;
+#else
+		boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket_;
+#endif
 		
 		std::unique_ptr<session<T>> session_ = nullptr;
 
