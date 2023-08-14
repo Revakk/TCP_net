@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <vector>
 #include <memory>
 #include <deque>

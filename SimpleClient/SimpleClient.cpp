@@ -1,6 +1,8 @@
 #include "tcp_network.hpp"
 #include <Windows.h>
 
+#include <execution>
+
 enum class CustomMsgType : uint32_t
 {
 	ServerAccept,
@@ -36,8 +38,26 @@ public:
 
 int main()
 {
+	//std::array<CustomClient, 100> clients{};
 	CustomClient c;
+
+	//std::for_each(std::execution::par, clients.begin(), clients.end(), [](CustomClient& client)
+	//	{
+	//		client.connect("127.0.0.1", 60000);
+	//	});
+	
+	//for (auto& client : clients) {
+	//	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//	client.connect("127.0.0.1", 60000);
+	//}
+
+	//std::this_thread::sleep_for(std::chrono::seconds(60));
+
+	//return 0;
+
 	auto successful = c.connect("127.0.0.1", 60000);
+
+	//return 0;
 
 	if (successful)
 	{
@@ -81,7 +101,7 @@ int main()
 					std::cout << msg.header_.message_size_ << '\n';
 					for (auto a : msg.data_)
 					{
-						std::cout << (a);
+						std::cout << char(a);
 					}
 				}
 				break;
@@ -114,7 +134,7 @@ int main()
 			std::this_thread::sleep_for(std::chrono::duration<int>(1));
 			c.connect("127.0.0.1", 60000);
 		}
-		std::this_thread::sleep_for(std::chrono::duration<int>(1));
+		//std::this_thread::sleep_for(std::chrono::duration<int>(1));
 	}
 
 	return 0;
