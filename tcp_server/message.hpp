@@ -50,18 +50,24 @@ namespace net
 		template<typename DataType>
 		friend message<T>& operator << (message<T>& _msg, const DataType& _data)
 		{
-			static_assert(std::is_standard_layout<DataType>::value, "Data type must be a standart layout!");
+			std::cout << "not a container" << '\n';
+			
+			if constexpr (std::is_same_v<std::string, DataType>) {
+				for (auto c : _data) {
+					_msg << c;
+				}
+			}
+			else {
+				static_assert(std::is_standard_layout<DataType>::value, "Data type must be a standart layout!");
+				size_t data_size = _msg.data_.size();
 
-			size_t data_size = _msg.data_.size();
+				_msg.data_.resize(data_size + sizeof(DataType));
 
-			_msg.data_.resize(data_size + sizeof(DataType));
+				std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
 
-			std::memcpy(_msg.data_.data() + data_size, &_data, sizeof(DataType));
-
-			_msg.header_.message_size_ = _msg.data_.size();
-
+				_msg.header_.message_size_ = _msg.data_.size();
+			}			
 			return _msg;
-
 		}
 
 		template<typename DataType, template <typename,typename = std::allocator<DataType>> class Container>
@@ -106,17 +112,21 @@ namespace net
 		template<typename DataType>
 		friend message<T>& operator >> (message<T>& _msg, DataType& _data)
 		{
-			static_assert(std::is_standard_layout<DataType>::value, "Data type must be a standart layout!");
+			if constexpr (std::is_same_v<std::string, DataType>) {
+				_data = std::string(_msg.data_.begin(), _msg.data_.end());
+			}
+			else {
+				static_assert(std::is_standard_layout<DataType>::value, "Data type must be a standart layout!");
+				size_t data_size = _msg.data_.size() - sizeof(DataType);
 
-			size_t data_size = _msg.data_.size() - sizeof(DataType);
+				std::memcpy(&_data, _msg.data_.data() + data_size, sizeof(DataType));
 
+				_msg.data_.resize(data_size);
 
-			std::memcpy(&_data, _msg.data_.data() + data_size, sizeof(DataType));
+				_msg.header_.message_size_ = _msg.size();
+			}
 
-			_msg.data_.resize(data_size);
-
-			_msg.header_.message_size_ = _msg.size();
-
+				
 			return _msg;
 
 		}
@@ -137,7 +147,5 @@ namespace net
 			_os << _mes.msg;
 			return _os;
 		}
-	};
-
-	
+	};	
 }

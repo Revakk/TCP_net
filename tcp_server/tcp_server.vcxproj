@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="message.hpp" />
+    <ClInclude Include="message_gen.hpp" />
     <ClInclude Include="message_queue.hpp" />
     <ClInclude Include="tcp_client.hpp" />
     <ClInclude Include="tcp_common.hpp" />

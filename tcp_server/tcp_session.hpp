@@ -21,6 +21,7 @@ namespace net
 
 		session(owner _parent, boost::asio::io_context& _context,boost::asio::ip::tcp::socket _socket,message_queue<owned_message<T>>& _q_in) : asio_context_(_context), socket_(std::move(_socket)),q_messages_in_(_q_in)
 		{
+			disconnect_callback_ = []() {std::cout << "[DEFAULT DISCONNECT CALLBACK] Client disconnected" << '\n'; };
 			owner_type_ = _parent;
 #ifdef VALIDATION
 			if (owner_type_ == owner::SERVER)
@@ -78,15 +79,14 @@ namespace net
 
 		void disconnect()
 		{
+			disconnect_callback_();
+			//asio_context_.stop();
 			boost::asio::post(asio_context_,
 				[this]()
 				{
 					socket_.close();
 
 				});
-
-			asio_context_.stop();
-
 		}
 
 
@@ -145,6 +145,7 @@ namespace net
 
 		message_queue<owned_message<T>>& q_messages_in_;
 		message<T> temporary_msg_;
+		std::function<void()> disconnect_callback_;
 
 		uint32_t id_ = 0;
 
@@ -170,11 +171,17 @@ namespace net
 							read_body();
 							std::cout << "after read_body" << '\n';
 						}
+						else {
+							add_to_incoming_message_queue();
+						}
 					}
 					else
 					{
 						std::cout << "[" << id_ << "]" << "Header read failed."<<'\n';
 						socket_.close();
+						disconnect_callback_();
+						//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+						//disconnect();
 					}
 				});
 		}
@@ -279,8 +286,11 @@ namespace net
 					if (!_ec)
 					{
 						if (owner_type_ == owner::CLIENT)
-							std::cout << "read header" << '\n';
+						{
 							read_header();
+							//std::cout << "read header" << '\n';
+						}
+							
 					}
 					else
 					{

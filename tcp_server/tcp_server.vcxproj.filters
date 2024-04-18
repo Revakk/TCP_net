@@ -41,5 +41,8 @@
     <ClInclude Include="tcp_network.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="message_gen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

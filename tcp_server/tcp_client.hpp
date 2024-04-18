@@ -121,8 +121,5 @@ namespace net
 	private:
 
 		message_queue<owned_message<T>> q_messages_in_;
-
-
-
 	};
 }

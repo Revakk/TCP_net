@@ -55,7 +55,7 @@ int main()
 
 	//return 0;
 
-	auto successful = c.connect("127.0.0.1", 60000);
+	auto successful = c.connect("127.0.0.1", 6666);
 
 	//return 0;
 
