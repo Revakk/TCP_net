@@ -43,19 +43,7 @@ protected:
 		net::message<CustomMsgType> msg;
 
 		msg.header_.id_= CustomMsgType::ServerAccept;
-		std::ifstream ifs("gg2.txt");
-		std::string content((std::istreambuf_iterator<char>(ifs)),
-			(std::istreambuf_iterator<char>()));
-		std::string ss{ "pièakurva +ìšèøıáíé" };
-		std::cout << ss << '\n';
-
-		for (auto& c : ss)
-		{
-			msg << c;
-		}
-
 		_client->send_message(msg);
-		//std::cout << msg.header_.message_size_ << '\n';
 	}
 
 	virtual void on_message(std::shared_ptr<net::session<CustomMsgType>> _client,net::message<CustomMsgType>& _msg)

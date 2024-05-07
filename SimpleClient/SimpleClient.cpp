@@ -59,11 +59,6 @@ int main()
 
 	//return 0;
 
-	if (successful)
-	{
-		std::cout << "jsem tam :)";
-	}
-
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false,false,false };
 
